@@ -1,7 +1,6 @@
 # Flexible Map Ban Overlay
-## A Valorant Map Ban Overlay Fork
 
-This tool is intended to add Overwatch 2 map ban functionality to the original project. You may now switch between Valorant and Overwatch 2 maps, and when in Overwatch 2 mode you can select the mode you want to ban maps from.
+This tool is designed to display an OBS overlay for use when shoutcasting your Valorant or Overwatch 2 matches and display your teams map bans and picks.  Select the game you are streaming, and if it is Overwatch 2, select the mode of maps you will be banning/picking from.
   
 <img src="https://github.com/KnoxGameTeacher/Flexible-Map-Ban-Overlay/blob/main/Map%20Ban%20Controller%20Overwatch%20Select.png" width = "35%" height="35%" >
 
