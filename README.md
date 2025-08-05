@@ -1,13 +1,16 @@
 # Flexible Map Ban Overlay
 ## A Valorant Map Ban Overlay Fork
 
-This tool is intended to add Overwatch 2 map ban functionality to the original project.  
+This tool is intended to add Overwatch 2 map ban functionality to the original project. You may now switch between Valorant and Overwatch 2 maps, and when in Overwatch 2 mode you can select the mode you want to ban maps from.
   
-<img src="https://github.com/kclevenger84/Valorant-Map-Ban-Overlay/blob/main/Map%20Ban%20Controller.png" width = "35%" height="35%" >
+<img src="https://github.com/KnoxGameTeacher/Flexible-Map-Ban-Overlay/blob/main/Map%20Ban%20Controller%20Overwatch%20Select.png" width = "35%" height="35%" >
 
 It will show on an overlay in OBS for the casters to discuss during the stream.  
 
+### Valorant Example Overlay
 <img src="https://github.com/kclevenger84/Valorant-Map-Ban-Overlay/blob/main/Map%20Ban%20Overlay.png" width="50%" height="50%" >
 
 
+### Overwatch Example Overlay
+<img src="https://github.com/KnoxGameTeacher/Flexible-Map-Ban-Overlay/blob/main/Map%20Ban%20Overlay%20Overwatch%20View.png" width="50%" height="50%" >
 
