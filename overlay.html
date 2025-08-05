@@ -106,12 +106,7 @@
 
     if (data.action === "ban") {
       mapCard.classList.add("banned");
-      document.getElementById(`${data.map}-ban`).textContent = `${data.team} BANNED 1`;
-    }
-
-    if (data.action === "ban2") {
-      mapCard.classList.add("banned");
-      document.getElementById(`${data.map}-ban`).textContent = `${data.team} BANNED 2`;
+      document.getElementById(`${data.map}-ban`).textContent = `${data.team} BANNED`;
     }
     
     if (data.action === "pick") {

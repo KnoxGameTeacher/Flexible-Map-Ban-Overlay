@@ -1,7 +1,7 @@
-# Valorant Map Ban OBS Overlay program
+# Flexible Map Ban Overlay
+## A Valorant Map Ban Overlay Fork
 
-This is a work in progress.  The purpose of the program is to control and   
-overlay in OBS that will show the map bans, picks and side select.  
+This tool is intended to add Overwatch 2 map ban functionality to the original project.  
   
 <img src="https://github.com/kclevenger84/Valorant-Map-Ban-Overlay/blob/main/Map%20Ban%20Controller.png" width = "35%" height="35%" >
 
