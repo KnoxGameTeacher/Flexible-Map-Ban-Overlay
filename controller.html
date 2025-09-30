@@ -54,8 +54,12 @@
   </select>
 </div>
 <div id="hero-bans" style="display: flex; justify-content: center; gap: 40px; margin-bottom: 20px;">
-  <div id="teamA-hero-ban"></div>
-  <div id="teamB-hero-ban"></div>
+  <div id="teamA-hero-ban" class="hero-ban-card">
+    <!-- Placeholder content will be set by JS -->
+  </div>
+  <div id="teamB-hero-ban" class="hero-ban-card">
+    <!-- Placeholder content will be set by JS -->
+  </div>
 </div>
   <label>
     Team A Name:
@@ -168,10 +172,15 @@
         mapSelect.appendChild(option);
       });
     }
+
+    
+
     function banHero(teamKey) {
       const hero = document.getElementById(teamKey === "teamA" ? "heroBanA" : "heroBanB").value;
-  socket.send(JSON.stringify({ action: "heroBan", team: teamKey, hero, game: currentGame }));
-}
+      socket.send(JSON.stringify({ action: "heroBan", team: teamKey, hero, game: currentGame }));
+    }
+
+    // Helper to set hero ban card content
 
     function setMapPool() {
       if (currentGame === "valorant") {

@@ -17,6 +17,36 @@ body {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
+.hero-ban-card {
+  width: 120px;
+  height: 180px;
+  border: 2px dashed #888;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: #222;
+  margin: 0 10px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.hero-ban-card img {
+  width: 80px;
+  height: 80px;
+  margin-top: 16px;
+  object-fit: contain;
+}
+
+.hero-ban-name {
+  margin-top: 12px;
+  color: #fff;
+  font-size: 1.1em;
+  text-align: center;
+  min-height: 1.2em;
+}
+
 .map-card {
   position: relative;
   width: 160px;
