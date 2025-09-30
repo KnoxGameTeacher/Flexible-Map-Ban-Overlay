@@ -144,6 +144,8 @@
     let currentGame = "valorant";
     let currentCategory = "control";
     let remainingMaps = new Set(valorantMaps);
+    let remainingHeroesA = new Set(ow2Heroes);
+    let remainingHeroesB = new Set(ow2Heroes);
     const socket = new WebSocket("ws://localhost:3000");
 
     socket.addEventListener("open", () => {
@@ -163,23 +165,24 @@
     const ow2CategoryDiv = document.getElementById("ow2CategoryDiv");
     const ow2CategorySelect = document.getElementById("ow2CategorySelect");
 
-    function populateHeroDropdowns() {
-      const heroBanA = document.getElementById("heroBanA");
-      const heroBanB = document.getElementById("heroBanB");
-      heroBanA.innerHTML = "";
-      heroBanB.innerHTML = "";
-      ow2Heroes.forEach(hero => {
-        const optionA = document.createElement("option");
-        optionA.value = hero;
-        optionA.textContent = hero;
-        heroBanA.appendChild(optionA);
-
-        const optionB = document.createElement("option");
-        optionB.value = hero;
-        optionB.textContent = hero;
-        heroBanB.appendChild(optionB);
-      });
-    }
+  function populateHeroDropdowns() {
+    const heroBanA = document.getElementById("heroBanA");
+    const heroBanB = document.getElementById("heroBanB");
+    heroBanA.innerHTML = "";
+    heroBanB.innerHTML = "";
+    remainingHeroesA.forEach(hero => {
+      const optionA = document.createElement("option");
+      optionA.value = hero;
+      optionA.textContent = hero;
+      heroBanA.appendChild(optionA);
+    });
+    remainingHeroesB.forEach(hero => {
+      const optionB = document.createElement("option");
+      optionB.value = hero;
+      optionB.textContent = hero;
+      heroBanB.appendChild(optionB);
+    });
+  }
     populateHeroDropdowns();
 
     function updateDropdown() {
@@ -196,9 +199,12 @@
       const hero = document.getElementById(teamKey === "teamA" ? "heroBanA" : "heroBanB").value;
       const teamName = document.getElementById(teamKey).value; // If you have a team name input
       socket.send(JSON.stringify({ action: "heroBan", team: teamKey, hero, teamName, game: currentGame }));
-    }
 
-    // Helper to set hero ban card content
+      // Remove the hero from both sets so neither team can ban it again
+      remainingHeroesA.delete(hero);
+      remainingHeroesB.delete(hero);
+      populateHeroDropdowns();
+    }
 
     function setMapPool() {
       if (currentGame === "valorant") {
@@ -266,6 +272,9 @@
 
       // Reset Maps
       setMapPool();
+      // Reset Heroes
+      remainingHeroesA = new Set(ow2Heroes);
+      remainingHeroesB = new Set(ow2Heroes);
       populateHeroDropdowns();
       // Notify overlay to reset
       socket.send(JSON.stringify({ action: "reset", game: currentGame, category: currentCategory }));
