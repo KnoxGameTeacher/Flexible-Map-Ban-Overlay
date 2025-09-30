@@ -9,6 +9,11 @@
 </head>
 
 <body>
+  <div id="hero-bans" style="display: flex; justify-content: center; gap: 40px; margin-bottom: 20px;">
+    <div id="teamA-hero-ban"></div>
+    <div id="teamB-hero-ban"></div>
+  </div>
+
   <div class="overlay-grid" id="map-grid"></div>
 
  <script>
@@ -82,11 +87,23 @@
     const data = JSON.parse(rawData);
     console.log("Received data:", data);
 
+    // Handle hero bans
+    if (data.action === "heroBan") {
+      const banDiv = document.getElementById(`${data.team}-hero-ban`);
+      // Optionally show hero image if available
+      //banDiv.innerHTML = `<img src="images/heroes/${encodeURIComponent(data.hero)}.png" alt="${data.hero}" style="height:40px;"> <span>${data.hero}</span>`;
+      banDiv.innerHTML = `<span>${data.hero}</span>`;
+      return;
+    }
+
     // Handle game/category switch
     if (data.action === "switch") {
       currentGame = data.game || "valorant";
       currentCategory = data.category || "control";
       renderMapGrid(currentGame, currentCategory);
+      // Clear hero bans on switch
+      document.getElementById("teamA-hero-ban").innerHTML = "";
+      document.getElementById("teamB-hero-ban").innerHTML = "";
       return;
     }
 
@@ -95,8 +112,12 @@
       currentGame = data.game || "valorant";
       currentCategory = data.category || "control";
       renderMapGrid(currentGame, currentCategory);
+      // Clear hero bans on reset
+      document.getElementById("teamA-hero-ban").innerHTML = "";
+      document.getElementById("teamB-hero-ban").innerHTML = "";
       return;
     }
+
 
     const mapCard = document.getElementById(`map-${data.map}`);
     if (!mapCard) {

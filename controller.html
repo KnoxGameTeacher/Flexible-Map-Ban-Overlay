@@ -53,7 +53,10 @@
     <option value="flashpoint">Flashpoint</option>
   </select>
 </div>
-
+<div id="hero-bans" style="display: flex; justify-content: center; gap: 40px; margin-bottom: 20px;">
+  <div id="teamA-hero-ban"></div>
+  <div id="teamB-hero-ban"></div>
+</div>
   <label>
     Team A Name:
     <input type="text" id="teamA" value="Team A">
@@ -96,6 +99,24 @@
     <button onclick="sendSide(getSelectedMap(), 'attack', 'teamB')">Attack (Team B)</button>
     <button onclick="sendSide(getSelectedMap(), 'defend', 'teamB')">Defend (Team B)</button>
   </div>
+  <div>
+  <label>Team A Hero Ban:</label>
+  <select id="heroBanA">
+    <option value="Reinhardt">Reinhardt</option>
+    <option value="Tracer">Tracer</option>
+    <!-- Add all heroes here -->
+  </select>
+  <button onclick="banHero('teamA')">Ban (Team A)</button>
+</div>
+<div>
+  <label>Team B Hero Ban:</label>
+  <select id="heroBanB">
+    <option value="Reinhardt">Reinhardt</option>
+    <option value="Tracer">Tracer</option>
+    <!-- Add all heroes here -->
+  </select>
+  <button onclick="banHero('teamB')">Ban (Team B)</button>
+</div>
   <div>
     <label></label>
     <button onclick="resetAll()">Reset</button>
@@ -147,6 +168,10 @@
         mapSelect.appendChild(option);
       });
     }
+    function banHero(teamKey) {
+      const hero = document.getElementById(teamKey === "teamA" ? "heroBanA" : "heroBanB").value;
+  socket.send(JSON.stringify({ action: "heroBan", team: teamKey, hero, game: currentGame }));
+}
 
     function setMapPool() {
       if (currentGame === "valorant") {
