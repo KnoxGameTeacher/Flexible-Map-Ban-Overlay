@@ -10,8 +10,8 @@
 
 <body>
   <div id="hero-bans" style="display: flex; justify-content: center; gap: 40px; margin-bottom: 20px;">
-    <div id="teamA-hero-ban"></div>
-    <div id="teamB-hero-ban"></div>
+    <div id="teamA-hero-ban" class="hero-ban-card"></div>
+    <div id="teamB-hero-ban" class="hero-ban-card"></div>
   </div>
 
   <div class="overlay-grid" id="map-grid"></div>
@@ -27,12 +27,21 @@
     flashpoint: ["Aatlis", "Suravasa", "New Junk City"]
   };
 
+  const ow2Heroes = [
+    "Ana", "Ashe", "Baptiste", "Bastion", "Brigitte", "Cassidy", "DVa", "Doomfist", "Echo",
+    "Genji", "Hanzo", "Illari", "Junker Queen", "Junkrat", "Kiriko", "Lifeweaver", "Lucio",
+    "Mauga", "Mei", "Mercy", "Moira", "Orisa", "Pharah", "Ramattra", "Reaper", "Reinhardt",
+    "Roadhog", "Sigma", "Sojourn", "Soldier 76", "Sombra", "Symmetra", "Torbjorn", "Tracer",
+    "Venture", "Widowmaker", "Winston", "Wrecking Ball", "Zarya", "Zenyatta"
+  ];
+
   let currentGame = "valorant";
   let currentCategory = "control";
 
   const mapGrid = document.getElementById("map-grid");
 
   function renderMapGrid(game, category) {
+    console.log("renderMapGrid called with:", game, category);
     mapGrid.innerHTML = "";
     let mapsToShow = [];
     if (game === "valorant") {
@@ -40,13 +49,13 @@
     } else if (game === "overwatch2") {
       mapsToShow = ow2Maps[category] || [];
     }
+    console.log("mapsToShow:", mapsToShow);
     mapsToShow.forEach((map) => {
       const card = document.createElement("div");
       card.className = "map-card";
       card.id = `map-${map}`;
       card.dataset.color = "";
 
-      // URL-encode the map name for the image src
       const encodedMapName = encodeURIComponent(map);
 
       card.innerHTML = `
@@ -78,74 +87,17 @@
     console.log("Overlay WebSocket connection closed");
   });
 
-    const data = JSON.parse(rawData);
-    console.log("Received data:", data);
-
-    // Handle hero bans
-    if (data.action === "heroBan") {
-      const banDiv = document.getElementById(`${data.team}-hero-ban`);
-      // Optionally show hero name
-      banDiv.innerHTML = `<img src="images/heroes/${encodeURIComponent(data.hero)}.png" alt="${data.hero}" style="height:40px;"> <span>${data.hero}</span>`;
-      //banDiv.innerHTML = `<span>${data.hero}</span>`;
-      return;
-    }
-
-    // Handle game/category switch
-    if (data.action === "switch") {
-      currentGame = data.game || "valorant";
-      currentCategory = data.category || "control";
-      renderMapGrid(currentGame, currentCategory);
-      // Clear hero bans on switch
-      document.getElementById("teamA-hero-ban").innerHTML = "";
-      document.getElementById("teamB-hero-ban").innerHTML = "";
-      return;
-    }
-
-    // Handle reset
-    if (data.action === "reset") {
-      currentGame = data.game || "valorant";
-      currentCategory = data.category || "control";
-      renderMapGrid(currentGame, currentCategory);
-      // Clear hero bans on reset
-      document.getElementById("teamA-hero-ban").innerHTML = "";
-      document.getElementById("teamB-hero-ban").innerHTML = "";
-      return;
-    }
-
-
-    const mapCard = document.getElementById(`map-${data.map}`);
-    if (!mapCard) {
-      console.error(`Map card not found for: ${data.map}`);
-      return;
-    }
-
-    if (data.action === "ban") {
-      mapCard.classList.add("banned");
-      document.getElementById(`${data.map}-ban`).textContent = `${data.team} BANNED`;
-    }
-    
-    if (data.action === "pick") {
-      document.getElementById(`${data.map}-pick`).textContent = `${data.team} PICKED`;
-    }
-
-    if (data.action === "side") {
-      document.getElementById(`${data.map}-side`).textContent = `${data.team} → ${data.side.toUpperCase()}`;
-    }
-
-    if (data.color) {
-      mapCard.style.setProperty("--team-color", data.color);
-    }
-
-function setHeroBan(team, hero) {
+  function setHeroBan(team, hero, teamName) {
     const banDiv = document.getElementById(`${team}-hero-ban`);
     if (hero) {
       banDiv.innerHTML = `
         <img src="images/heroes/${encodeURIComponent(hero)}.png" alt="${hero}">
         <div class="hero-ban-name">${hero}</div>
+        <div class="hero-ban-team">${teamName ? teamName + " BANNED" : ""}</div>
       `;
       banDiv.style.borderStyle = "solid";
     } else {
-      banDiv.innerHTML = `<div class="hero-ban-name"></div>`;
+      banDiv.innerHTML = `<div class="hero-ban-name"></div><div class="hero-ban-team"></div>`;
       banDiv.style.borderStyle = "dashed";
     }
   }
@@ -153,18 +105,6 @@ function setHeroBan(team, hero) {
   // On load, show empty placeholders
   setHeroBan("teamA", null);
   setHeroBan("teamB", null);
-
-  socket.addEventListener("open", () => {
-    console.log("Overlay WebSocket connection established");
-  });
-
-  socket.addEventListener("error", (error) => {
-    console.error("Overlay WebSocket error:", error);
-  });
-
-  socket.addEventListener("close", () => {
-    console.log("Overlay WebSocket connection closed");
-  });
 
   socket.addEventListener("message", async (event) => {
     let rawData = event.data;
@@ -177,7 +117,7 @@ function setHeroBan(team, hero) {
 
     // Handle hero bans
     if (data.action === "heroBan") {
-      setHeroBan(data.team, data.hero);
+      setHeroBan(data.team, data.hero, data.teamName || data.team);
       return;
     }
 
@@ -200,6 +140,32 @@ function setHeroBan(team, hero) {
       setHeroBan("teamB", null);
       return;
     }
+
+    if (data.action === "ban") {
+      const mapCard = document.getElementById(`map-${data.map}`);
+      if (mapCard) {
+        mapCard.classList.add("banned");
+        const banLabel = document.getElementById(`${data.map}-ban`);
+        if (banLabel) {
+          banLabel.textContent = `${data.team} BANNED`;
+        }
+      }
+      return;
+    }
+
+    // Handle map pick
+    if (data.action === "pick") {
+      const mapCard = document.getElementById(`map-${data.map}`);
+      if (mapCard) {
+        mapCard.classList.add("picked");
+        const pickLabel = document.getElementById(`${data.map}-pick`);
+        if (pickLabel) {
+          pickLabel.textContent = `${data.team} PICKED`;
+        }
+      }
+      return;
+    }
+   
   });
 </script>
 </body>

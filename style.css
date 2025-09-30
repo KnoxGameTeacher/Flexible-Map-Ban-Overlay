@@ -47,6 +47,14 @@ body {
   min-height: 1.2em;
 }
 
+.hero-ban-team {
+  margin-top: 6px;
+  color: #ffffff;
+  font-size: 0.95em;
+  text-align: center;
+  min-height: 1.1em;
+}
+
 .map-card {
   position: relative;
   width: 160px;
