@@ -9,11 +9,15 @@
 </head>
 
 <body>
-  <div id="hero-bans" style="display: flex; justify-content: center; gap: 40px; margin-bottom: 20px;">
-    <div id="teamA-hero-ban" class="hero-ban-card"></div>
-    <div id="teamB-hero-ban" class="hero-ban-card"></div>
+  <div id="hero-bans-section" style="display: none;">
+    <div style="text-align: center; font-size: 1.3em; font-weight: bold; margin-bottom: 8px;">Hero Bans</div>
+    <div id="hero-bans" style="display: flex; justify-content: center; gap: 40px; margin-bottom: 20px;">
+      <div id="teamA-hero-ban" class="hero-ban-card"></div>
+      <div id="teamB-hero-ban" class="hero-ban-card"></div>
+    </div>
   </div>
 
+  <div style="text-align: center; font-size: 1.3em; font-weight: bold; margin-bottom: 8px;">Map Bans</div>
   <div class="overlay-grid" id="map-grid"></div>
 
  <script>
@@ -69,9 +73,18 @@
       mapGrid.appendChild(card);
     });
   }
-
   // Initial render
   renderMapGrid(currentGame, currentCategory);
+
+  function updateHeroBansVisibility() {
+    const heroBansSection = document.getElementById("hero-bans-section");
+    if (currentGame === "overwatch2") {
+      heroBansSection.style.display = "";
+    } else {
+      heroBansSection.style.display = "none";
+    }
+  }
+  updateHeroBansVisibility();
 
   const socket = new WebSocket("ws://localhost:3000");
 
@@ -121,23 +134,25 @@
       return;
     }
 
-    // Handle game/category switch
-    if (data.action === "switch") {
-      currentGame = data.game || "valorant";
-      currentCategory = data.category || "control";
-      renderMapGrid(currentGame, currentCategory);
-      setHeroBan("teamA", null);
-      setHeroBan("teamB", null);
+    if (data.action === "side") {
+      const mapCard = document.getElementById(`map-${data.map}`);
+      if (mapCard) {
+        const sideLabel = document.getElementById(`${data.map}-side`);
+        if (sideLabel) {
+          sideLabel.textContent = `${data.team} → ${data.side.toUpperCase()}`;
+        }
+      }
       return;
     }
 
-    // Handle reset
-    if (data.action === "reset") {
+    // Handle game/category switch and reset
+    if (data.action === "switch" || data.action === "reset") {
       currentGame = data.game || "valorant";
       currentCategory = data.category || "control";
       renderMapGrid(currentGame, currentCategory);
       setHeroBan("teamA", null);
       setHeroBan("teamB", null);
+      updateHeroBansVisibility();
       return;
     }
 
@@ -145,6 +160,7 @@
       const mapCard = document.getElementById(`map-${data.map}`);
       if (mapCard) {
         mapCard.classList.add("banned");
+        mapCard.style.setProperty('--team-color', data.color || '#c00');
         const banLabel = document.getElementById(`${data.map}-ban`);
         if (banLabel) {
           banLabel.textContent = `${data.team} BANNED`;
@@ -158,6 +174,7 @@
       const mapCard = document.getElementById(`map-${data.map}`);
       if (mapCard) {
         mapCard.classList.add("picked");
+        mapCard.style.setProperty('--team-color', data.color || '#000');
         const pickLabel = document.getElementById(`${data.map}-pick`);
         if (pickLabel) {
           pickLabel.textContent = `${data.team} PICKED`;

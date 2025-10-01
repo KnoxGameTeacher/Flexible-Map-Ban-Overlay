@@ -76,7 +76,7 @@
   </label>
   <label>
     Team B Color:
-    <input type="color" id="colorB" value="#0000ff">
+    <input type="color" id="colorB" value="#000000">
   </label>
 
   <div>
@@ -256,8 +256,7 @@
 
     function sendSide(map, side, teamKey) {
       const team = document.getElementById(teamKey).value;
-      remainingMaps.delete(map);
-      updateDropdown();
+      // Do NOT remove the map here!
       const message = { action: "side", map, team, side, game: currentGame, category: currentCategory };
       socket.send(JSON.stringify(message));
       console.log("Sending side:", message);
